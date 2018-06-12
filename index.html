@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>音乐播放器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        ul {
+            list-style: none;
+        }
+        .box {
+            width: 500px;
+            height: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: rgba(41,42,43,.6);
+            border: 1px solid black;
+            color: #fff;
+            position: relative;
+            z-index: 9;
+        }
+        .bgImg {
+            width: 540px;
+            height: 440px;
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            margin-left: -270px;
+            background: url("https://y.gtimg.cn/music/photo_new/T002R300x300M000001vkzpn2HAE1F.jpg?max_age=2592000") no-repeat;
+            background-size: 540px 440px;
+        }
+        .player {
+            width: 100%;
+            height: 150px;
+        }
+        .player img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            float: left;
+        }
+        .control {
+            float: left;
+            width: 328px;
+            height: 143px;
+            margin-left: 20px;
+            position: relative;
+            border: 1px solid red;
+        }
+        .control p {
+            margin: 15px 50px;
+        }
+        .control-progress {
+            width: 100%;
+            height: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .total-progress {
+            width: 100%;
+            height: 2px;
+            background-color: rgba(255,255,255,.1);
+            margin-top: 25px;
+            position: relative;
+            cursor: pointer;
+        }
+        .current-progress {
+            width: 0;
+            height: 2px;
+            background-color: rgba(255,255,255,.7);
+        }
+        .circle-progress {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: white;
+            position: absolute;
+            left: 0;
+            top: -4px;
+        }
+        .play-time {
+            position: absolute;
+            top: 0;
+            right: 10px;
+        }
+        .control-btn {
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        .control-btn div {
+            float: left;
+        }
+        .control-btn > .prev,.control-btn > .next {
+            width: 20px;
+            height: 20px;
+            margin-top: 5px;
+        }
+        .control-btn > .prev {
+            margin-right: 5px;
+            background: url("player.png") no-repeat 0 -30px;
+        }
+        .control-btn > .next {
+            background: url("player.png") no-repeat 0 -52px;
+        }
+        .control-btn > .start {
+            width: 23px;
+            height: 30px;
+            margin: 0 20px;
+            background: url("player.png") no-repeat 0 0;
+        }
+        .sound-btn {
+            width: 140px;
+            height: 25px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            cursor: pointer;
+        }
+        .sound-btn > span {
+            width: 30px;
+            height: 20px;
+            float: left;
+            background: url("player.png") no-repeat 0 -143px;
+        }
+        .sound {
+            width: 100px;
+            height: 4px;
+            float: right;
+            margin-top: 10px;
+            margin-right: 10px;
+            background-color: rgba(255,255,255,.3);
+            position: relative;
+        }
+        .current-sound {
+            width: 50px;
+            height: 4px;
+            background-color: rgba(255,255,255,.7);
+        }
+        .current-circle {
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            left: 50px;
+            top: -2px;
+        }
+        .play-type {
+            width: 26px;
+            height: 24px;
+            background:url("player.png") no-repeat 0 -205px;
+            float: left;
+            margin-left: 25px;
+            margin-top: 2px;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .playList {
+            width: 100%;
+            height: 230px;
+            margin-top: 20px;
+            border: 1px solid #797979;
+        }
+        .playList li {
+            margin: 5px 10px;
+            padding: 5px;
+            cursor: pointer;
+        }
+        .playList li:hover {
+            background-color: rgba(255,255,255,.2);
+        }
+        .active {
+            color: #a8363c;
+        }
+    </style>
+</head>
+<body>
+<div class="bgImg"></div>
+<div class="box">
+    <div class="player">
+        <img src="https://y.gtimg.cn/music/photo_new/T002R300x300M000001vkzpn2HAE1F.jpg?max_age=2592000" alt="">
+        <div class="control">
+            <p class="singer">纸短情长------烟把儿乐队</p>
+            <div class="control-progress">
+                <div class="total-progress">
+                    <div class="current-progress"></div>
+                    <div class="circle-progress"></div>
+                </div>
+                <div class="play-time">
+                    <span>00:00</span>&nbsp;/&nbsp;<span>00:00</span>
+                </div>
+            </div>
+            <div class="control-btn">
+                <div class="prev"></div>
+                <div class="start"></div>
+                <div class="next"></div>
+            </div>
+            <div class="play-type"></div>
+            <div class="sound-btn">
+                <span></span>
+                <div class="sound">
+                    <div class="current-sound"></div>
+                    <div class="current-circle"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="playList">
+        <ul>
+            <!--<li>纸短情长&#45;&#45;&#45;&#45;&#45;&#45;烟把儿乐队</li>-->
+            <!--<li>纸短情长&#45;&#45;&#45;&#45;&#45;&#45;烟把儿乐队</li>-->
+            <!--<li>纸短情长&#45;&#45;&#45;&#45;&#45;&#45;烟把儿乐队</li>-->
+        </ul>
+    </div>
+</div>
+
+<audio></audio>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    var audio = document.querySelector('audio');
+    data = [
+        {
+        singer: '烟把儿乐队',
+        song: '纸短情长',
+        pic: 'https://y.gtimg.cn/music/photo_new/T002R300x300M000001vkzpn2HAE1F.jpg?max_age=2592000',
+        src: '纸短情长.m4a'
+    },{
+        singer: '周杰伦',
+        song: '夜曲',
+        pic: 'https://y.gtimg.cn/music/photo_new/T002R300x300M0000024bjiL2aocxT.jpg?max_age=2592000',
+        src: '夜曲.m4a'
+    },{
+        singer: '安琥',
+        song: '天使的翅膀',
+        pic: 'https://y.gtimg.cn/music/photo_new/T002R300x300M000000dGYPl3nQsZ8.jpg?max_age=2592000',
+        src: '天使的翅膀.m4a'
+    },{
+        singer: '买辣椒也用券',
+        song: '起风了',
+        pic: 'https://y.gtimg.cn/music/photo_new/T002R300x300M000003j3NMw1ZBpsv.jpg?max_age=2592000',
+        src: '起风了.m4a'
+    },{
+        singer: '金志文',
+        song: '远走高飞',
+        pic: 'https://y.gtimg.cn/music/photo_new/T002R300x300M000004U936F0HXo1B.jpg?max_age=2592000',
+        src: '远走高飞.m4a'
+    }
+    ];
+    var $ul = $('.playList ul');
+    var index = 0;
+    var timer = null;
+    var rotateDeg = 0;
+    var str = '';
+
+    $.each(data,function(i,e){
+        str += '<li>'+e.song+'---'+e.singer+'</li>';
+    });
+    $ul.html(str);
+    function init(){
+        $('.player img').attr('src',data[index].pic);
+        $('.singer').html(data[index].song + '---'+ data[index].singer);
+        audio.src = data[index].src;
+        $('.bgImg').css({
+            background: 'url("'+data[index].pic+'") no-repeat',
+            backgroundSize: '540px 440px'
+        });
+        rotateDeg = 0;
+        $('li').eq(index).addClass('active').siblings().removeClass('active');
+        audio.src = data[index].src;
+    }
+    init();
+
+    function play(){
+        if(audio.paused){
+            audio.play();
+            clearInterval(timer);
+            timer = setInterval(function(){
+                rotateDeg++;
+                $('.player img').css('transform','rotate('+ rotateDeg +'deg)');
+            },30);
+            $('.start').css('background-position-x', '-30px');
+        }else{
+            clearInterval(timer);
+            audio.pause();
+            $('.start').css('background-position-x', '0px');
+        }
+    }
+    $('.start').click(function(){
+        play();
+    });
+    $('.prev').click(function(){
+        index--;
+        index = index < 0 ? data.length-1 : index;
+        init();
+        play();
+    });
+    $('.next').click(function(){
+        index++;
+        index = index > data.length-1 ? 0 : index;
+        init();
+        play();
+    });
+    audio.addEventListener('canplay',function(){
+        var totalM = parseInt(audio.duration/60);
+        var totalS = parseInt(audio.duration % 60);
+        $('.play-time span').eq(1).html(formate(totalM) +':'+formate(totalS));
+        audio.addEventListener('timeupdate',function(){
+            var currentM = parseInt(audio.currentTime/60);
+            var currentS = parseInt(audio.currentTime % 60);
+            $('.play-time span').eq(0).html(formate(currentM) +':'+formate(currentS));
+            var position = (audio.currentTime / audio.duration) * ($('.total-progress').width()-10);
+            $('.current-progress').width(position);
+            $('.circle-progress').css('left',position);
+            if(audio.ended){
+                index++;
+                index = index > data.length-1 ? 0 : index;
+                init();
+                play();
+            }
+        });
+        $('.total-progress').click(function(e){
+            var currentTime = (e.offsetX / $('.total-progress').width()) * audio.duration;
+            audio.currentTime = currentTime;
+            audio.play();
+            clearInterval(timer);
+            timer = setInterval(function(){
+                rotateDeg++;
+                $('.player img').css('transform','rotate('+ rotateDeg +'deg)');
+            },30);
+            $('.start').css('background-position-x', '-30px');
+        })
+    });
+    $('li').click(function(){
+        index = $(this).index();
+        init();
+        play();
+    });
+    $('.sound').click(function(e){
+        audio.volume = e.offsetX / $('.sound').width();
+        $('.current-sound').width(e.offsetX);
+        $('.current-circle').css('left',e.offsetX);
+        audio.play();
+        clearInterval(timer);
+        timer = setInterval(function(){
+            rotateDeg++;
+            $('.player img').css('transform','rotate('+ rotateDeg +'deg)');
+        },30);
+        $('.start').css('background-position-x', '-30px');
+    });
+    var flag = false;
+    $('.sound-btn span').click(function(){
+        if(flag){
+            $('.sound-btn span').css('background-position-y','-143px');
+            audio.volume = 0.5;
+            $('.current-sound').width(50);
+            $('.current-circle').css('left',50);
+        }else{
+            $('.sound-btn span').css('background-position-y','-183px');
+            audio.volume = 0;
+            $('.current-sound').width(0);
+            $('.current-circle').css('left',0);
+        }
+        flag = !flag;
+    });
+    $.fn.toggle = function( fn, fn2 ) {
+        var args = arguments,guid = fn.guid || $.guid++,i=0,
+            toggle = function( event ) {
+                var lastToggle = ( $._data( this, "lastToggle" + fn.guid ) || 0 ) % i;
+                $._data( this, "lastToggle" + fn.guid, lastToggle + 1 );
+                event.preventDefault();
+                return args[ lastToggle ].apply( this, arguments ) || false;
+            };
+        toggle.guid = guid;
+        while ( i < args.length ) {
+            args[ i++ ].guid = guid;
+        }
+        return this.click( toggle );
+    };
+    $('.play-type').toggle(
+        function(){
+            $('.play-type').css('background-position-y','-205px');       //列表循环
+            audio.removeAttribute('loop');
+            $('.prev').click(function(){
+                index--;
+                index = index < 0 ? data.length-1 : index;
+                init();
+                play();
+            });
+            $('.next').click(function(){
+                index++;
+                index = index > data.length-1 ? 0 : index;
+                init();
+                play();
+            });
+        },
+        function(){
+            $('.play-type').css('background-position-y','-257px');        //顺序播放
+            audio.removeAttribute('loop');
+            $('.prev').click(function(){
+                index--;
+                index = index < 0 ? data.length-1 : index;
+                init();
+                play();
+            });
+            $('.next').click(function(){
+                index++;
+                index = index > data.length-1 ? 0 : index;
+                init();
+                play();
+            });
+            },
+        function(){
+            $('.play-type').css('background-position-y','-72px');        //随机播放
+            audio.removeAttribute('loop');
+            $('.prev,.next').click(function(){
+                index = Math.floor(Math.random()*data.length);
+                init();
+                play();
+            });
+            },
+        function(){
+            $('.play-type').css('background-position-y','-232px');       //单曲循环
+            for(var i =0;i<data.length;i++){
+                if(audio.src == data[i].src){
+                    break;
+                }
+            }
+            var index = i;
+            audio.setAttribute('loop','loop');
+            console.log(index);
+            $('.prev').click(function(){
+                var index = i;
+                console.log(index);
+                init();
+                audio.play();
+                audio.setAttribute('loop','loop');
+            });
+            $('.next').click(function(){
+                var index = i;
+                init();
+                audio.play();
+                audio.setAttribute('loop','loop');
+            });
+            }
+    );
+    function formate(time){
+        return time < 10 ? '0'+ time : time;
+    }
+</script>
+</html>
